@@ -1,0 +1,38 @@
+Главное задание - предсказать, в какой стране пользователь выполнит своё следующее бронирование
+
+Типы стран: 'US', 'FR', 'CA', 'GB', 'ES', 'IT', 'PT', 'NL','DE', 'AU', 'NDF', 'other'. Последний таргет значит, что бронирование было в какой-то другой стране. NDF - бронирование сделано не было.
+
+train_users.csv - Твой основной трейн сет
+
+test_users.csv - Тест сет, на котором я буду давать тебе скор
+Колонки:
+id: id юзера
+date_account_created: Дата создания аккаунта
+timestamp_first_active: время первого действия, может быть раньше date_account_created или date_first_booking, так как возможно проводить действия без регистрации
+date_first_booking: дата первого бронирования
+gender
+age
+signup_method
+signup_flow: страница, с которой пользователь перешёл для решистрации
+language
+affiliate_channel: тип маркетинга
+affiliate_provider: на основании какой платформы проведён маркетинг
+first_affiliate_tracked: какой первый тип маркетинга пользователь увидел до регистрации
+signup_app
+first_device_type
+first_browser
+country_destination - таргет
+
+sessions.csv - лог сессий ля пользователей
+user_id: с этой колонкой надо джойнить колонку id в файлах *users.csv
+action
+action_type
+action_detail
+device_type
+secs_elapsed
+
+
+countries.csv - информация о странах
+age_gender_bkts.csv - статистики пользователей различные
+sample_submission.csv - образец выходного файла
+
