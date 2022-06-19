@@ -43,11 +43,11 @@ def encode_data(data):
                     "signup_flow",
                     "affiliate_provider",
                     "signup_app",
-                    "first_device_type"], axis=1)
+                    "first_device_type",
+                    "affiliate_channel"], axis=1)
 
     df = pd.get_dummies(df, columns=["gender",
-                                     "signup_method",
-                                     "affiliate_channel"])
+                                     "signup_method"])
     
     return df
     
@@ -78,18 +78,14 @@ def conf_matrix(y_test, y_pred):
     plt.show()
     
 
-def evaluate_metrics(estimator, X_test, y_test):
-    y_pred = estimator.predict(X_test)
+def evaluate_metrics(estimator, X, y):
+    cv = StratifiedKFold(n_splits=5, shuffle=True)
+    scoring = ('accuracy', 'precision_macro', 'recall_macro', 'f1_macro')
+    scores = cross_validate(estimator, X, y, scoring=scoring, cv=cv)
 
-    cv = StratifiedKFold(n_splits=5)
-    scores = cross_validate(estimator, X_test, y_test, scoring=['accuracy',
-                                                                'precision_macro',
-                                                                'recall_macro',
-                                                                'f1_macro'], cv=cv, n_jobs=-1)
     accuracy = scores['test_accuracy'].mean()
     precision = scores['test_precision_macro'].mean()
     recall = scores['test_recall_macro'].mean()
     f1_score = scores["test_f1_macro"].mean()
 
     print(f"Accuracy: {accuracy}\nPrecision: {precision}\nRecall: {recall}\nF1: {f1_score}")
-    conf_matrix(y_test, y_pred)
