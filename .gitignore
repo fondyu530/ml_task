@@ -148,3 +148,5 @@ cython_debug/
 .idea/
 
 data/sessions.csv
+separate_classif_method.ipynb
+
