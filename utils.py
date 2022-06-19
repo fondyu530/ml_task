@@ -1,7 +1,8 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix
+from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import StratifiedKFold, cross_validate
 
 
 def int_time_to_str(x: str):
@@ -80,10 +81,15 @@ def conf_matrix(y_test, y_pred):
 def evaluate_metrics(estimator, X_test, y_test):
     y_pred = estimator.predict(X_test)
 
-    accuracy = accuracy_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred, average="macro")
-    recall = recall_score(y_test, y_pred, average="macro")
+    cv = StratifiedKFold(n_splits=5)
+    scores = cross_validate(estimator, X_test, y_test, scoring=['accuracy',
+                                                                'precision_macro',
+                                                                'recall_macro',
+                                                                'f1_macro'], cv=cv, n_jobs=-1)
+    accuracy = scores['test_accuracy'].mean()
+    precision = scores['test_precision_macro'].mean()
+    recall = scores['test_recall_macro'].mean()
+    f1_score = scores["test_f1_macro"].mean()
 
-    print(f"Accuracy: {accuracy}\nPrecision: {precision}\nRecall: {recall}")
-
+    print(f"Accuracy: {accuracy}\nPrecision: {precision}\nRecall: {recall}\nF1: {f1_score}")
     conf_matrix(y_test, y_pred)
