@@ -9,6 +9,28 @@ def int_time_to_str(x: str):
     return x[:4] + '-' + x[4:6] + '-' + x[6:8] + ' ' + x[8:10] + ':' + x[10:12] + ':' + x[12:]
 
 
+def add_sessions(main_data, sessions):
+    main_data = main_data.merge(sessions, how="left", on="id")
+    actions = main_data.drop(["age", "signup_flow"], axis=1)\
+                       .groupby(["gender", "signup_method"])\
+                       .mean()\
+                       .round()\
+                       .reset_index()
+    cols_with_actions = sessions.columns[1:]
+    for col in cols_with_actions:
+        actions = actions.rename(columns={col: f"{col}_mean"})
+
+    cols_with_actions_means = [col + "_mean" for col in cols_with_actions]
+
+    main_data = main_data.merge(actions, on=["gender", "signup_method"])
+
+    for i in range(len(cols_with_actions)):
+        main_data[cols_with_actions[i]] = main_data[cols_with_actions[i]].fillna(main_data[cols_with_actions_means[i]])
+        main_data = main_data.drop(cols_with_actions_means[i], axis=1)
+
+    return main_data
+
+
 def clear_data(main_data):
     # set appropriate data types
     main_data["date_account_created"] = main_data["date_account_created"].astype("datetime64[ns]")
